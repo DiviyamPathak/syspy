@@ -1,3 +1,15 @@
 /.vscode
-/README.md
 /venv
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+
+# Codon compiled executables
+/main
+/benchmark
+
+# OS generated files
+.DS_Store
