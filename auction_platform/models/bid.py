@@ -1,8 +1,11 @@
 
-from auction_platform.models.user import User
+from ..models.user import User
 
 
 class Bid:
+    bidder: User
+    amount: float
+
     def __init__(self, bidder: User, amount: float):
         self.bidder = bidder
         self.amount = amount
