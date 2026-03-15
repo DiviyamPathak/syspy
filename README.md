@@ -47,3 +47,63 @@ codon build -release -exe main.py
 Comparing the CPython interpretation of the code against the compiled executable revealed roughly a **~7x real-world speedup**. 
 
 This massive improvement is due to skipping bytecode interpretation, removing dynamic type-checking overhead, running calculations directly on the CPU, and utilizing Codon's underlying Boehm Garbage Collector (which leverages idle CPU cores to perform cleanup concurrently instead of blocking the main thread).
+
+---
+
+## Usage
+
+You can run the application either using standard Python or via the compiled Codon executable.
+
+### Running with Python
+```bash
+python3 main.py
+```
+
+### Running the compiled executable
+If you have built the executable using Codon:
+```bash
+./main
+```
+
+### Main Menu
+When you run the application, you'll be presented with an interactive menu:
+1. **Create Auction**: Prompts you to enter item details, starting/reserve prices, and select an auction type.
+2. **List Auctions**: Displays all currently available auctions.
+3. **Place Bid**: Allows you to place a bid on a specific auction by entering your username and bid amount.
+4. **Close Auction**: Manually ends an auction and calculates the winner based on the specific rules of that auction type.
+5. **Exit**: Closes the application.
+
+### Running the Benchmark
+To test the performance of the system, run the automated benchmark script:
+```bash
+python3 benchmark.py
+# or
+./benchmark
+```
+This will automatically create a large number of items, users, auctions, and bids, resolving them as fast as possible to measure system throughput.
+
+## Architecture
+
+The project is structured using Object-Oriented principles, dividing data models and business logic into distinct components:
+
+*   **Models (`models/`)**: 
+    *   `Item`: Represents the physical or digital good being auctioned.
+    *   `User`: Represents a participant in the auction platform.
+    *   `Bid`: Associates a `User` with an `amount` they are willing to pay.
+*   **Auctions (`auctions/`)**: 
+    *   `BaseAuction`: The foundation class that handles common logic like starting/reserve prices, timestamps, storing lists of bids, and managing the open/closed state.
+    *   **Specialized Auctions**: Subclasses inheriting from `BaseAuction` that implement their own specific `determine_winner()` and `place_bid()` rules.
+*   **Core Logic (`main.py`)**: The entry point that orchestrates user input, manages the global state of active users and auctions, and dispatches commands to the appropriate auction instances.
+
+## Auction Types
+
+The platform supports multiple distinct auction formats, each dictating how bids are processed and how the winner is selected.
+
+### 1. First-Price Sealed-Bid
+A closed format where participants submit a single, hidden bid. Bidders do not know the amounts submitted by others. When the auction closes, all bids are revealed simultaneously. The highest bidder wins and pays the exact amount of their bid.
+
+### 2. Second-Price Sealed-Bid (Vickrey Auction)
+Similar to the first-price format, but with a twist on the final price. Bids are hidden and submitted once. When the auction closes, the highest bidder wins the item. However, the winner only pays the amount of the **second-highest bid** submitted (or the reserve price if there is no second bid). This format encourages bidders to bid their true maximum value for the item.
+
+### 3. English Auction
+This is the most common open-outcry format. Participants can see the current highest bid and must place progressively higher bids to stay in the running. When the auction closes, the highest bidder wins and pays exactly the amount they bid (provided it meets the reserve price). *Platform rule:* Each new bid must strictly exceed the current highest bid's amount, otherwise it is rejected immediately.
