@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "syspy"
+version = "0.1.0"
+authors = [
+  { name="DiviyamPathak", email="patdiviyam@gmail.com" },
+]
+description = "COmpiling a python project into a binary"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    # Add your project dependencies here, e.g.,
+    # "requests>=2.28.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/DiviyamPathak/syspy"
+"Bug Tracker" = "https://github.com/DiviyamPathak/syspy/issues"

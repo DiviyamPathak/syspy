@@ -1,0 +1,4 @@
+site_name: syspy Documentation
+site_url: https://your-username.github.io/syspy/
+theme:
+  name: material
